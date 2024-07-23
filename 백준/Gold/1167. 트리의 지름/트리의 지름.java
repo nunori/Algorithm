@@ -1,5 +1,9 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 public class Main {
     static class Node {
@@ -7,68 +11,57 @@ public class Main {
         int weight;
 
         Node(int to, int weight) {
-            this.to = to; // 연결된 노드 번호
-            this.weight = weight; // 해당 노드까지의 거리
+            this.to = to;
+            this.weight = weight;
         }
     }
 
     static List<Node>[] graph;
     static boolean[] visited;
-    static int maxDistance = 0;
+    static int maxDist = 0;
     static int maxNode = 0;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int V = Integer.parseInt(br.readLine());
 
-        graph = new ArrayList[V + 1]; // 노드 번호 1부터 시작하기 때문에 V + 1
-        for (int i = 1; i <= V; i++) {
+        graph = new ArrayList[V + 1];
+        for(int i = 1; i <= V; i++) {
             graph[i] = new ArrayList<>();
-        } // 노드에 연결된 다른 노드들을 저장하기 위한 ArrayList
-        // 이 초기화 과정이 없을 때 NullPointerException 발생
+        }
 
-        for (int i = 0; i < V; i++) {
+        for(int i = 0; i < V; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
             int node = Integer.parseInt(st.nextToken());
-            while (true) {
-                int adjacent = Integer.parseInt(st.nextToken());
-                if (adjacent == -1) break;
+            while(true) {
+                int adj = Integer.parseInt(st.nextToken());
+                if(adj == -1) break;
                 int weight = Integer.parseInt(st.nextToken());
-                graph[node].add(new Node(adjacent, weight));
+                graph[node].add(new Node(adj, weight));
             }
         }
 
-        // Step 1: 첫 번째 BFS를 통해 임의의 노드에서 가장 먼 노드를 찾음
         visited = new boolean[V + 1];
-        bfs(1);
+        dfs(1, 0);
 
-        // Step 2: 두 번째 BFS를 통해 첫 번째로 찾은 노드에서 가장 먼 노드를 찾음
         visited = new boolean[V + 1];
-        bfs(maxNode);
+        maxDist = 0;
+        dfs(maxNode, maxDist);
 
-        System.out.println(maxDistance);
+        System.out.println(maxDist);
     }
 
-    static void bfs(int start) {
-        Queue<Node> queue = new LinkedList<>();
-        visited[start] = true;
-        queue.offer(new Node(start, 0));
+    static void dfs(int currNode, int currDist) {
+        visited[currNode] = true;
 
-        while (!queue.isEmpty()) {
-            Node current = queue.poll();
-            int currentNode = current.to;
-            int currentDistance = current.weight;
+        if (currDist > maxDist) {
+            maxDist = currDist;
+            maxNode = currNode;
+        }
 
-            if (currentDistance > maxDistance) {
-                maxDistance = currentDistance;
-                maxNode = currentNode;
-            }
-
-            for (Node neighbor : graph[currentNode]) {
-                if (!visited[neighbor.to]) {
-                    visited[neighbor.to] = true;
-                    queue.offer(new Node(neighbor.to, currentDistance + neighbor.weight));
-                }
+        for (Node neighbor : graph[currNode]) {
+            if (!visited[neighbor.to]) {
+                dfs(neighbor.to, currDist + neighbor.weight);
             }
         }
     }
