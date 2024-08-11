@@ -5,11 +5,15 @@ import java.util.StringTokenizer;
 
 public class Main {
 
+    static int[][] dp;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         int N = Integer.parseInt(st.nextToken());
         int K = Integer.parseInt(st.nextToken());
+
+        dp = new int[N + 1][K + 1];
 
         int result = BC(N, K);
 
@@ -17,8 +21,9 @@ public class Main {
     }
 
     static int BC(int N, int K) {
-        if(N == K || K == 0) return 1;
-        return BC(N - 1, K - 1) + BC(N - 1, K);
+        if(dp[N][K] > 0) return dp[N][K];
+        if(N == K || K == 0) return dp[N][K] = 1;
+        return dp[N][K] = BC(N - 1, K - 1) + BC(N - 1, K);
     }
 
 }
