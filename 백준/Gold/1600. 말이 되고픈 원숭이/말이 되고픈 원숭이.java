@@ -49,7 +49,7 @@ public class Main {
     private static int bfs(int x, int y) {
         Queue<Node> queue = new LinkedList<>();
         queue.offer(new Node(x, y, 0, k));
-        visited[x][y][k] = true; ////////////////////////
+        visited[x][y][k] = true;
 
         while(!queue.isEmpty()) {
             Node curr = queue.poll();
