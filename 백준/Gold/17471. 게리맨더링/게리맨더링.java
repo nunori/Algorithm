@@ -1,4 +1,3 @@
-import java.sql.Array;
 import java.util.*;
 import java.io.*;
 public class Main {
@@ -10,6 +9,7 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
         peoples = new int[N + 1];
+        area = new int[N + 1];
         list = new ArrayList[N + 1];
         StringTokenizer st = new StringTokenizer(br.readLine());
         for(int i = 1; i < N + 1; i++) {
@@ -17,7 +17,7 @@ public class Main {
             list[i] = new ArrayList<>();
         }
 
-        for(int i = 1; i <= N; i++) {
+        for(int i = 1; i < N + 1; i++) {
             st = new StringTokenizer(br.readLine());
             int cnt = Integer.parseInt(st.nextToken());
             for(int j = 0; j < cnt; j++) {
@@ -25,7 +25,6 @@ public class Main {
             }
         }
 
-        area = new int[N + 1];
         min = Integer.MAX_VALUE;
         dfs(1);
         if(min == Integer.MAX_VALUE) min = -1;
@@ -41,14 +40,16 @@ public class Main {
                 else area2 += peoples[i];
             }
 
-            int cnt = 0;
             visited = new boolean[N + 1];
+
+            int cnt = 0;
             for(int i = 1; i < N + 1; i++) {
                 if(!visited[i]) {
                     bfs(i, area[i]);
                     cnt++;
                 }
             }
+
             if(cnt == 2) min = Math.min(min, Math.abs(area1 - area2));
             return;
         }
@@ -58,20 +59,20 @@ public class Main {
 
         area[idx] = 2;
         dfs(idx + 1);
-
     }
 
     private static void bfs(int idx, int areaNum) {
-        Queue<Integer> queue = new LinkedList<>();
+        Queue<Integer> q = new LinkedList<>();
         visited[idx] = true;
-        queue.add(idx);
-        while(!queue.isEmpty()) {
-            int curr = queue.poll();
+        q.add(idx);
+
+        while(!q.isEmpty()) {
+            int curr = q.poll();
 
             for(int i = 0; i < list[curr].size(); i++) {
                 int next = list[curr].get(i);
-                if(area[next] == areaNum && !visited[next]) {
-                    queue.add(next);
+                if(!visited[next] && area[next] == areaNum) {
+                    q.add(next);
                     visited[next] = true;
                 }
             }
