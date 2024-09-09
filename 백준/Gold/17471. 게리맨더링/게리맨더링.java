@@ -1,83 +1,84 @@
+import java.sql.Array;
 import java.util.*;
 import java.io.*;
 public class Main {
-    static List<List<Integer>> graph = new ArrayList<>();
-    static int min, N;
-    static int[] people, arr;
-    static boolean[] check;
+    static int N, min;
+    static int[] peoples, area;
+    static ArrayList<Integer>[] list;
+    static boolean[] visited;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
-        people = new int[N];
+        peoples = new int[N + 1];
+        list = new ArrayList[N + 1];
         min = Integer.MAX_VALUE;
-        arr = new int[N + 1];
+
         StringTokenizer st = new StringTokenizer(br.readLine());
-
-        for(int i = 0; i < people.length; i++) {
-            people[i] = Integer.parseInt(st.nextToken());
+        for(int i = 1; i < N + 1; i++) {
+            list[i] = new ArrayList<>();
+            peoples[i] = Integer.parseInt(st.nextToken());
         }
 
-        for(int i = 0; i <= N; i++) {
-            graph.add(new ArrayList<Integer>());
-        }
         for(int i = 1; i <= N; i++) {
             st = new StringTokenizer(br.readLine());
-            int cnt = Integer.parseInt(st.nextToken());
-            for(int j = 0; j < cnt; j++) {
-                graph.get(i).add(Integer.parseInt(st.nextToken()));
+            int num = Integer.parseInt(st.nextToken());
+            for(int j = 0; j < num; j++) {
+                list[i].add(Integer.parseInt(st.nextToken()));
             }
         }
 
-        back(1);
-        if(min == Integer.MAX_VALUE) System.out.println(-1);
+        area = new int[N + 1];
+        dfs(1);
+
+        if(min == Integer.MAX_VALUE) System.out.println("-1");
         else System.out.println(min);
     }
 
-    static void back(int depth) {
-        if(depth == N + 1) {
-            check = new boolean[depth];
-
-            int cnt = 0;
-
+    public static void dfs(int k) {
+        if(k == N + 1) {
+            int area1 = 0;
+            int area2 = 0;
             for(int i = 1; i <= N; i++) {
-                if(!check[i]) {
-                    link(i, arr[i]);
-                    cnt++;
+                if(area[i] == 1) area1 += peoples[i];
+                else area2 += peoples[i];
+            }
+
+            visited = new boolean[N + 1];
+            int link = 0;
+            for(int i = 1; i <= N; i++) {
+                if(!visited[i]) {
+                    bfs(i, area[i]);
+                    link++;
                 }
             }
 
-            if(cnt == 2) {
-                int a = 0;
-                int b = 0;
-                for(int i = 0; i < N; i++) {
-                    if(arr[i + 1] == 1) a += people[i];
-                    else b += people[i];
-                }
-                min = Math.min(min, Math.abs(a - b));
-            }
+            if(link == 2) min = Math.min(min, Math.abs(area1 - area2));
             return;
         }
 
-        arr[depth] = 1;
-        back(depth + 1);
+        area[k] = 1;
+        dfs(k + 1);
 
-        arr[depth] = 0;
-        back(depth + 1);
+        area[k] = 2;
+        dfs(k + 1);
     }
 
-    static void link(int depth, int local) {
+    private static void bfs(int idx, int areaNum) {
         Queue<Integer> queue = new LinkedList<>();
-        queue.add(depth);
-        check[depth] = true;
+        visited[idx] = true;
+        queue.offer(idx);
 
         while(!queue.isEmpty()) {
             int curr = queue.poll();
-            for(int next : graph.get(curr)) {
-                if(arr[next] == local && !check[next]) {
-                    check[next] = true;
-                    queue.add(next);
+
+            for(int i = 0; i < list[curr].size(); i++) {
+                int next = list[curr].get(i);
+                if(area[next] == areaNum && !visited[next]) {
+                    queue.offer(next);
+                    visited[next] = true;
                 }
             }
         }
     }
+
 }
