@@ -3,8 +3,8 @@ import java.io.*;
 public class Main {
     static int N, min;
     static int[] peoples, area;
-    static ArrayList<Integer>[] list;
     static boolean[] visited;
+    static ArrayList<Integer>[] list;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
@@ -24,7 +24,6 @@ public class Main {
                 list[i].add(Integer.parseInt(st.nextToken()));
             }
         }
-
         min = Integer.MAX_VALUE;
         dfs(1);
         if(min == Integer.MAX_VALUE) min = -1;
@@ -40,9 +39,9 @@ public class Main {
                 else area2 += peoples[i];
             }
 
+            int cnt = 0;
             visited = new boolean[N + 1];
 
-            int cnt = 0;
             for(int i = 1; i < N + 1; i++) {
                 if(!visited[i]) {
                     bfs(i, area[i]);
@@ -52,6 +51,7 @@ public class Main {
 
             if(cnt == 2) min = Math.min(min, Math.abs(area1 - area2));
             return;
+
         }
 
         area[idx] = 1;
@@ -63,14 +63,15 @@ public class Main {
 
     private static void bfs(int idx, int areaNum) {
         Queue<Integer> q = new LinkedList<>();
-        visited[idx] = true;
         q.add(idx);
+        visited[idx] = true;
 
         while(!q.isEmpty()) {
             int curr = q.poll();
 
             for(int i = 0; i < list[curr].size(); i++) {
                 int next = list[curr].get(i);
+
                 if(!visited[next] && area[next] == areaNum) {
                     q.add(next);
                     visited[next] = true;
@@ -78,4 +79,6 @@ public class Main {
             }
         }
     }
+
+
 }
