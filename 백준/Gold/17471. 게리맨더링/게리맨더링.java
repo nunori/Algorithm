@@ -11,74 +11,70 @@ public class Main {
         N = Integer.parseInt(br.readLine());
         peoples = new int[N + 1];
         list = new ArrayList[N + 1];
-        min = Integer.MAX_VALUE;
-
         StringTokenizer st = new StringTokenizer(br.readLine());
         for(int i = 1; i < N + 1; i++) {
-            list[i] = new ArrayList<>();
             peoples[i] = Integer.parseInt(st.nextToken());
+            list[i] = new ArrayList<>();
         }
 
         for(int i = 1; i <= N; i++) {
             st = new StringTokenizer(br.readLine());
-            int num = Integer.parseInt(st.nextToken());
-            for(int j = 0; j < num; j++) {
+            int cnt = Integer.parseInt(st.nextToken());
+            for(int j = 0; j < cnt; j++) {
                 list[i].add(Integer.parseInt(st.nextToken()));
             }
         }
 
         area = new int[N + 1];
+        min = Integer.MAX_VALUE;
         dfs(1);
-
-        if(min == Integer.MAX_VALUE) System.out.println("-1");
-        else System.out.println(min);
+        if(min == Integer.MAX_VALUE) min = -1;
+        System.out.println(min);
     }
 
-    public static void dfs(int k) {
-        if(k == N + 1) {
+    private static void dfs(int idx) {
+        if(idx == N + 1) {
             int area1 = 0;
             int area2 = 0;
-            for(int i = 1; i <= N; i++) {
+            for(int i = 1; i < N + 1; i++) {
                 if(area[i] == 1) area1 += peoples[i];
                 else area2 += peoples[i];
             }
 
+            int cnt = 0;
             visited = new boolean[N + 1];
-            int link = 0;
-            for(int i = 1; i <= N; i++) {
+            for(int i = 1; i < N + 1; i++) {
                 if(!visited[i]) {
                     bfs(i, area[i]);
-                    link++;
+                    cnt++;
                 }
             }
-
-            if(link == 2) min = Math.min(min, Math.abs(area1 - area2));
+            if(cnt == 2) min = Math.min(min, Math.abs(area1 - area2));
             return;
         }
 
-        area[k] = 1;
-        dfs(k + 1);
+        area[idx] = 1;
+        dfs(idx + 1);
 
-        area[k] = 2;
-        dfs(k + 1);
+        area[idx] = 2;
+        dfs(idx + 1);
+
     }
 
     private static void bfs(int idx, int areaNum) {
         Queue<Integer> queue = new LinkedList<>();
         visited[idx] = true;
-        queue.offer(idx);
-
+        queue.add(idx);
         while(!queue.isEmpty()) {
             int curr = queue.poll();
 
             for(int i = 0; i < list[curr].size(); i++) {
                 int next = list[curr].get(i);
                 if(area[next] == areaNum && !visited[next]) {
-                    queue.offer(next);
+                    queue.add(next);
                     visited[next] = true;
                 }
             }
         }
     }
-
 }
