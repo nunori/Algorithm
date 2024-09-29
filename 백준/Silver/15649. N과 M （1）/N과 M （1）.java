@@ -11,9 +11,9 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
+
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
-
         arr = new int[M];
         visited = new boolean[N + 1];
 
@@ -30,8 +30,8 @@ public class Main {
         }
         for(int i = 1; i <= N; i++) {
             if(!visited[i]) {
-                visited[i] = true;
                 arr[depth] = i;
+                visited[i] = true;
                 dfs(depth + 1);
                 visited[i] = false;
             }
