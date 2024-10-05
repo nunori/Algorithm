@@ -1,22 +1,19 @@
 import java.util.*;
 class Solution {
+    static int answer = 0;
     public int solution(int[] numbers, int target) {
-        Deque<Integer> deque = new ArrayDeque<>();
-        int ans = 0;
-        deque.offerLast(ans);
-        for(int i = 0; i < numbers.length; i++) {
-            int size = deque.size();
-            for(int j = 0; j < size; j++) {
-                int sum = deque.pollFirst();
-                deque.offerLast(sum + numbers[i]);
-                deque.offerLast(sum - numbers[i]);
+        dfs(0, numbers, target, 0);
+        return answer;
+    }
+    
+    private void dfs(int depth, int[] numbers, int target, int sum) {
+        if(depth == numbers.length) {
+            if(sum == target) {
+                answer++;
             }
-        }
-        while(!deque.isEmpty()) {
-            if(deque.pollFirst() == target) {
-                ans++;
-            }
-        }
-        return ans;
+            return;
+        };
+        dfs(depth + 1, numbers, target, sum + numbers[depth]);
+        dfs(depth + 1, numbers, target, sum - numbers[depth]);
     }
 }
