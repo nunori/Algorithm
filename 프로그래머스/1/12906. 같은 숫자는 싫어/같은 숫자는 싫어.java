@@ -2,20 +2,20 @@ import java.util.*;
 
 public class Solution {
     public int[] solution(int []arr) {
-        Deque<Integer> deque = new ArrayDeque<>();
-        for(int i = 0; i < arr.length; i++) {
-            if(deque.isEmpty()) {
-                deque.offerLast(arr[i]);
-            } else {
-                if(deque.peekLast() != arr[i]) {
-                    deque.offerLast(arr[i]);
-                }
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        int preNum = Integer.MAX_VALUE;
+        for(int num : arr) {
+            if(preNum != num) {
+                arrayList.add(num);
+                preNum = num;
             }
         }
-        int[] res = new int[deque.size()];
+        
+        int[] res = new int[arrayList.size()];
         for(int i = 0; i < res.length; i++) {
-            res[i] = deque.pollFirst();
+            res[i] = arrayList.get(i);
         }
+        
         return res;
     }
 }
